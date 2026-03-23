@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JK Tyre Cut Tyre Analysis System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    /* Smooth transitions for details */
+    .details-row > td > div {
+      animation: slideDown 0.3s ease-out forwards;
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased">
+
+  <!-- ==========================================
+       LOGIN PAGE
+       ========================================== -->
+  <div id="login-page" class="page-section flex h-screen w-full bg-white">
+    <div class="hidden lg:flex flex-1 relative bg-slate-900 items-center justify-center flex-col overflow-hidden">
+      <img 
+        src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=1000&auto=format&fit=crop" 
+        alt="Tire Background" 
+        class="absolute inset-0 w-full h-full object-cover opacity-30"
+        referrerpolicy="no-referrer"
+      />
+      <div class="z-10 text-center px-8">
+        <div class="w-20 h-20 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-xl transform rotate-3">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <h1 class="text-4xl font-bold text-white tracking-tight mb-3">JK Tyre</h1>
+        <p class="text-xl text-slate-300 font-light">Cut Tyre Analysis System</p>
+      </div>
+    </div>
+    <div class="flex-1 flex items-center justify-center p-8">
+      <div class="w-full max-w-md">
+        <h2 class="text-3xl font-semibold text-slate-900 mb-8">Sign In</h2>
+        <form onsubmit="handleLogin(event); return false;" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Email Address</label>
+            <input type="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" placeholder="Enter your email" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">Password</label>
+            <div class="relative">
+              <input id="password-input" type="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-slate-50 focus:bg-white" placeholder="Enter your password" />
+              <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors">
+                <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg id="eye-off-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" x2="22" y1="2" y2="22"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="flex items-center justify-between">
+            <label class="flex items-center cursor-pointer">
+              <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4" />
+              <span class="ml-2 text-sm text-slate-600">Remember me</span>
+            </label>
+            <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-700">Forgot Password?</a>
+          </div>
+          <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3.5 px-4 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-[0.98]">
+            Sign In
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PLANT SELECTION PAGE
+       ========================================== -->
+  <div id="selection-page" class="page-section hidden min-h-screen p-8 md:p-12">
+    <div class="max-w-6xl mx-auto">
+      <div class="mb-12">
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Select Dashboard</h1>
+        <p class="text-slate-500 mt-2 text-lg">Choose a plant or view central comparison</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- BTP -->
+        <div onclick="openPlant('BTP')" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200 transition-all duration-300 cursor-pointer group">
+          <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-blue-50 text-blue-600 group-hover:scale-110 transition-transform duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-900 mb-1">BTP Plant</h3>
+          <p class="text-sm text-slate-500">Individual Plant Analysis</p>
+        </div>
+
+        <!-- CTP -->
+        <div onclick="openPlant('CTP')" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-emerald-200 transition-all duration-300 cursor-pointer group">
+          <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-emerald-50 text-emerald-600 group-hover:scale-110 transition-transform duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-900 mb-1">CTP Plant</h3>
+          <p class="text-sm text-slate-500">Individual Plant Analysis</p>
+        </div>
+
+        <!-- RTP -->
+        <div onclick="openPlant('RTP')" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-indigo-200 transition-all duration-300 cursor-pointer group">
+          <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-indigo-50 text-indigo-600 group-hover:scale-110 transition-transform duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8l-7 5V4a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M17 18h1"/><path d="M12 18h1"/><path d="M7 18h1"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-900 mb-1">RTP Plant</h3>
+          <p class="text-sm text-slate-500">Individual Plant Analysis</p>
+        </div>
+
+        <!-- Central Level -->
+        <div onclick="openCentral()" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 cursor-pointer group">
+          <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-purple-50 text-purple-600 group-hover:scale-110 transition-transform duration-300">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3 class="text-xl font-semibold text-slate-900 mb-1">Central Level</h3>
+          <p class="text-sm text-slate-500">Comparison Dashboard</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PLANT DASHBOARD (BTP/CTP/RTP)
+       ========================================== -->
+  <div id="plant-dashboard" class="page-section hidden min-h-screen p-6 md:p-10">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-5 rounded-2xl shadow-sm border border-slate-100 gap-4">
+        <div class="flex items-center space-x-4">
+          <button onclick="showPage('selection-page')" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </button>
+          <h1 id="plant-title" class="text-2xl font-bold text-slate-900 tracking-tight">Plant Analysis</h1>
+        </div>
+        <div class="flex space-x-3">
+          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
+            <option>Month</option>
+            <option>January</option>
+            <option>February</option>
+          </select>
+          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
+            <option>Year</option>
+            <option>2026</option>
+            <option>2025</option>
+          </select>
+          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
+            <option>All SKUs</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-100">
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">SKU</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Grade</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">Rating</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-right">Details</th>
+              </tr>
+            </thead>
+            <tbody id="plant-tbody">
+              <!-- JS will populate rows here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       CENTRAL DASHBOARD
+       ========================================== -->
+  <div id="central-dashboard" class="page-section hidden min-h-screen p-6 md:p-10">
+    <div class="max-w-7xl mx-auto space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-5 rounded-2xl shadow-sm border border-slate-100 gap-4">
+        <div class="flex items-center space-x-4">
+          <button onclick="showPage('selection-page')" class="p-2 hover:bg-slate-100 rounded-xl transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-slate-600"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          </button>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Data Comparison</h1>
+        </div>
+        <div class="flex space-x-3">
+          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
+            <option>Month</option>
+          </select>
+          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
+            <option>Year</option>
+          </select>
+          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
+            <option>All SKUs</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-100">
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider">SKU</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-center border-l border-slate-100">BTP Grade</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-center">BTP Rating</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-center border-l border-slate-100">CTP Grade</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-center">CTP Rating</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-center border-l border-slate-100">RTP Grade</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-center">RTP Rating</th>
+                <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-right border-l border-slate-100">Details</th>
+              </tr>
+            </thead>
+            <tbody id="central-tbody">
+              <!-- JS will populate rows here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT LOGIC
+       ========================================== -->
+  <script>
+    // Mock Data Generation
+    const SKUS = [
+      "145/80R12 ULTIMA HILIFE TL",
+      "145/80R13 ULT NEO 75S TL",
+      "155 R13 UL XPC 8PR Q TT",
+      "155/65R13 ULTIMA HL 73T TL",
+      "155/70R13 ULT HL 75T TL",
+      "155/80R13 TAXIMAX 79S TL",
+      "155/80R13 UL HL 79S TL"
+    ];
+    
+    const COMPONENTS = [
+      "Tread",
+      "Sidewall",
+      "Bead",
+      "Material Endings and Centering",
+      "Others"
+    ];
+
+    function generatePlantData(seed) {
+      return SKUS.map((sku, index) => {
+        const pseudoRandom = (seed + index) % 3;
+        return {
+          sku,
+          grade: ['A', 'B', 'C'][pseudoRandom],
+          rating: (3 + ((seed + index) % 20) / 10).toFixed(1),
+          breakdown: COMPONENTS.map((comp, cIdx) => {
+            const total = 8 + ((seed + index + cIdx) % 5);
+            const outOfThreshold = ((seed + index + cIdx) % 4);
+            return { component: comp, total, outOfThreshold };
+          })
+        };
+      });
+    }
+
+    const mockData = {
+      BTP: generatePlantData(1),
+      CTP: generatePlantData(2),
+      RTP: generatePlantData(3),
+    };
+
+    // Navigation Logic
+    function showPage(pageId) {
+      document.querySelectorAll('.page-section').forEach(p => p.classList.add('hidden'));
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      showPage('selection-page');
+    }
+
+    function togglePassword() {
+      const input = document.getElementById('password-input');
+      const eye = document.getElementById('eye-icon');
+      const eyeOff = document.getElementById('eye-off-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eye.classList.add('hidden');
+        eyeOff.classList.remove('hidden');
+      } else {
+        input.type = 'password';
+        eye.classList.remove('hidden');
+        eyeOff.classList.add('hidden');
+      }
+    }
+
+    // Dashboard Logic
+    function openPlant(plantId) {
+      document.getElementById('plant-title').innerText = plantId + ' Plant Analysis';
+      renderPlantTable(plantId);
+      showPage('plant-dashboard');
+    }
+
+    function openCentral() {
+      renderCentralTable();
+      showPage('central-dashboard');
+    }
+
+    function toggleRow(rowId, chevronId) {
+      const row = document.getElementById(rowId);
+      const chevron = document.getElementById(chevronId);
+      if (row.classList.contains('hidden')) {
+        row.classList.remove('hidden');
+        chevron.style.transform = 'rotate(180deg)';
+      } else {
+        row.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function getGradeClass(grade) {
+      if (grade === 'A') return 'bg-emerald-100 text-emerald-700';
+      if (grade === 'B') return 'bg-blue-100 text-blue-700';
+      return 'bg-amber-100 text-amber-700';
+    }
+
+    function generateComponentBreakdownHtml(sku, highlightPlant = null) {
+      const btpRow = mockData.BTP.find(r => r.sku === sku);
+      const ctpRow = mockData.CTP.find(r => r.sku === sku);
+      const rtpRow = mockData.RTP.find(r => r.sku === sku);
+
+      return COMPONENTS.map(comp => {
+        const btpData = btpRow.breakdown.find(b => b.component === comp);
+        const ctpData = ctpRow.breakdown.find(b => b.component === comp);
+        const rtpData = rtpRow.breakdown.find(b => b.component === comp);
+
+        const plants = [
+          { name: 'BTP', data: btpData },
+          { name: 'CTP', data: ctpData },
+          { name: 'RTP', data: rtpData }
+        ];
+
+        let rowsHtml = plants.map(p => {
+          const total = p.data.total;
+          const out = p.data.outOfThreshold;
+          const percent = total > 0 ? Math.round((out / total) * 100) : 0;
+          
+          let progressColor = 'bg-emerald-500';
+          let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+          
+          if (out > 0) {
+            if (percent <= 25) {
+              progressColor = 'bg-yellow-400';
+              badgeClass = 'bg-yellow-50 text-yellow-700 border-yellow-200';
+            } else {
+              progressColor = 'bg-red-500';
+              badgeClass = 'bg-red-50 text-red-700 border-red-200';
+            }
+          }
+
+          const isHighlighted = highlightPlant === p.name ? 'bg-blue-50/40' : '';
+
+          return `
+            <tr class="border-t border-slate-100 ${isHighlighted}">
+              <td class="py-4 px-4 text-sm font-semibold text-slate-700">${p.name}</td>
+              <td class="py-4 px-4 text-sm text-slate-600 text-center">${total}</td>
+              <td class="py-4 px-4 text-sm text-center">
+                <span class="px-3 py-1 rounded-md text-xs font-bold border ${badgeClass}">${out}</span>
+              </td>
+              <td class="py-4 px-4">
+                <div class="flex items-center gap-3">
+                  <div class="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                    <div class="${progressColor} h-full rounded-full" style="width: ${percent}%"></div>
+                  </div>
+                  <span class="text-xs font-semibold text-slate-500 w-10 text-right">${out}/${total}</span>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        return `
+          <div class="bg-white p-0 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row overflow-hidden">
+            <div class="w-full md:w-1/4 bg-slate-50/50 p-6 flex items-center border-b md:border-b-0 md:border-r border-slate-100">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center border border-blue-100 shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                </div>
+                <h3 class="font-bold text-slate-800 uppercase tracking-wider text-sm">${comp}</h3>
+              </div>
+            </div>
+            <div class="w-full md:w-3/4 p-6 overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/4">Plant</th>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center w-1/4">Total Params</th>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center w-1/4">Out of Threshold</th>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/4">Progress</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${rowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPlantTable(plantId) {
+      const tbody = document.getElementById('plant-tbody');
+      tbody.innerHTML = '';
+      const data = mockData[plantId];
+
+      data.forEach((row, i) => {
+        const safeId = 'p' + i;
+        
+        // Main Row
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-50 hover:bg-slate-50/50 cursor-pointer transition-colors group';
+        tr.onclick = () => toggleRow(`details-${safeId}`, `chev-${safeId}`);
+        
+        tr.innerHTML = `
+          <td class="px-6 py-4 font-medium text-slate-900">${row.sku}</td>
+          <td class="px-6 py-4">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${getGradeClass(row.grade)}">
+              Grade ${row.grade}
+            </span>
+          </td>
+          <td class="px-6 py-4 text-slate-600 font-medium">${row.rating} / 5.0</td>
+          <td class="px-6 py-4 text-right text-slate-400 group-hover:text-slate-600 transition-colors">
+            <svg id="chev-${safeId}" style="transition: transform 0.3s" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="m6 9 6 6 6-6"/></svg>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Details Row
+        const detailsTr = document.createElement('tr');
+        detailsTr.id = `details-${safeId}`;
+        detailsTr.className = 'hidden bg-slate-50/50 details-row';
+        
+        let breakdownHtml = generateComponentBreakdownHtml(row.sku, plantId);
+
+        detailsTr.innerHTML = `
+          <td colspan="4" class="p-0 border-b border-slate-100">
+            <div class="px-8 py-8 bg-slate-50/30">
+              <h4 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Plant-wise Component Breakdown</h4>
+              <div class="flex flex-col gap-6">
+                ${breakdownHtml}
+              </div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(detailsTr);
+      });
+    }
+
+    function renderCentralTable() {
+      const tbody = document.getElementById('central-tbody');
+      tbody.innerHTML = '';
+      
+      SKUS.forEach((sku, i) => {
+        const btpRow = mockData.BTP.find(r => r.sku === sku);
+        const ctpRow = mockData.CTP.find(r => r.sku === sku);
+        const rtpRow = mockData.RTP.find(r => r.sku === sku);
+        
+        const safeId = 'c' + i;
+        
+        // Main Row
+        const tr = document.createElement('tr');
+        tr.className = 'border-b border-slate-50 hover:bg-slate-50/50 cursor-pointer transition-colors group';
+        tr.onclick = () => toggleRow(`cdetails-${safeId}`, `cchev-${safeId}`);
+        
+        tr.innerHTML = `
+          <td class="px-6 py-4 font-medium text-slate-900">${sku}</td>
+          <td class="px-6 py-4 text-center border-l border-slate-50">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${getGradeClass(btpRow.grade)}">Grade ${btpRow.grade}</span>
+          </td>
+          <td class="px-6 py-4 text-center text-slate-600 font-medium">${btpRow.rating}</td>
+          <td class="px-6 py-4 text-center border-l border-slate-50">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${getGradeClass(ctpRow.grade)}">Grade ${ctpRow.grade}</span>
+          </td>
+          <td class="px-6 py-4 text-center text-slate-600 font-medium">${ctpRow.rating}</td>
+          <td class="px-6 py-4 text-center border-l border-slate-50">
+            <span class="px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${getGradeClass(rtpRow.grade)}">Grade ${rtpRow.grade}</span>
+          </td>
+          <td class="px-6 py-4 text-center text-slate-600 font-medium">${rtpRow.rating}</td>
+          <td class="px-6 py-4 text-right text-slate-400 border-l border-slate-50 group-hover:text-slate-600 transition-colors">
+            <svg id="cchev-${safeId}" style="transition: transform 0.3s" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="inline"><path d="m6 9 6 6 6-6"/></svg>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Details Row
+        const detailsTr = document.createElement('tr');
+        detailsTr.id = `cdetails-${safeId}`;
+        detailsTr.className = 'hidden bg-slate-50/50 details-row';
+        
+        let breakdownHtml = generateComponentBreakdownHtml(sku);
+
+        detailsTr.innerHTML = `
+          <td colspan="8" class="p-0 border-b border-slate-100">
+            <div class="px-8 py-8 bg-slate-50/30">
+              <h4 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Plant-wise Component Breakdown</h4>
+              <div class="flex flex-col gap-6">
+                ${breakdownHtml}
+              </div>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(detailsTr);
+      });
+    }
+  </script>
+</body>
+</html>
