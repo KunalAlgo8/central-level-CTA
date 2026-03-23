@@ -195,15 +195,13 @@
           <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Data Comparison</h1>
         </div>
         <div class="flex space-x-3">
-          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
-            <option>Month</option>
-          </select>
-          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
-            <option>Year</option>
-          </select>
-          <select class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium cursor-pointer hover:bg-slate-100 transition-colors">
-            <option>All SKUs</option>
-          </select>
+          <input type="month" class="bg-slate-50 border border-slate-200 text-slate-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium hover:bg-slate-100 transition-colors" />
+          <div class="flex">
+            <input type="text" id="global-sku-search" placeholder="Search SKU" onkeypress="if(event.key === 'Enter') searchGlobalSKU()" class="bg-slate-50 border border-slate-200 text-slate-700 rounded-l-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium hover:bg-slate-100 transition-colors" />
+            <button onclick="searchGlobalSKU()" class="bg-blue-600 text-white px-4 py-2.5 rounded-r-xl hover:bg-blue-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -332,7 +330,7 @@
       return 'bg-amber-100 text-amber-700';
     }
 
-    function generateComponentBreakdownHtml(sku, highlightPlant = null) {
+    function generateComponentBreakdownHtml(sku, highlightPlant = null, isGlobal = false) {
       const btpRow = mockData.BTP.find(r => r.sku === sku);
       const ctpRow = mockData.CTP.find(r => r.sku === sku);
       const rtpRow = mockData.RTP.find(r => r.sku === sku);
@@ -368,13 +366,7 @@
 
           const isHighlighted = highlightPlant === p.name ? 'bg-blue-50/40' : '';
 
-          return `
-            <tr class="border-t border-slate-100 ${isHighlighted}">
-              <td class="py-4 px-4 text-sm font-semibold text-slate-700">${p.name}</td>
-              <td class="py-4 px-4 text-sm text-slate-600 text-center">${total}</td>
-              <td class="py-4 px-4 text-sm text-center">
-                <span class="px-3 py-1 rounded-md text-xs font-bold border ${badgeClass}">${out}</span>
-              </td>
+          const progressCell = isGlobal ? '' : `
               <td class="py-4 px-4">
                 <div class="flex items-center gap-3">
                   <div class="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden">
@@ -383,9 +375,22 @@
                   <span class="text-xs font-semibold text-slate-500 w-10 text-right">${out}/${total}</span>
                 </div>
               </td>
+          `;
+
+          return `
+            <tr class="border-t border-slate-100 ${isHighlighted}">
+              <td class="py-4 px-4 text-sm font-semibold text-slate-700">${p.name}</td>
+              <td class="py-4 px-4 text-sm text-slate-600 text-center">${total}</td>
+              <td class="py-4 px-4 text-sm text-center">
+                <span class="px-3 py-1 rounded-md text-xs font-bold border ${badgeClass}">${out}</span>
+              </td>
+              ${progressCell}
             </tr>
           `;
         }).join('');
+
+        const progressHeader = isGlobal ? '' : `<th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/4">Progress</th>`;
+        const colWidth = isGlobal ? 'w-1/3' : 'w-1/4';
 
         return `
           <div class="bg-white p-0 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col md:flex-row overflow-hidden">
@@ -401,10 +406,10 @@
               <table class="w-full text-left border-collapse">
                 <thead>
                   <tr>
-                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/4">Plant</th>
-                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center w-1/4">Total Params</th>
-                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center w-1/4">Out of Threshold</th>
-                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider w-1/4">Progress</th>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider ${colWidth}">Plant</th>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center ${colWidth}">Total Params</th>
+                    <th class="pb-3 px-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center ${colWidth}">Out of Threshold</th>
+                    ${progressHeader}
                   </tr>
                 </thead>
                 <tbody>
@@ -465,11 +470,18 @@
       });
     }
 
-    function renderglobalTable() {
+    function searchGlobalSKU() {
+      const query = document.getElementById('global-sku-search').value.toLowerCase();
+      renderglobalTable(query);
+    }
+
+    function renderglobalTable(searchQuery = '') {
       const tbody = document.getElementById('global-tbody');
       tbody.innerHTML = '';
       
-      SKUS.forEach((sku, i) => {
+      const filteredSKUs = SKUS.filter(sku => sku.toLowerCase().includes(searchQuery));
+      
+      filteredSKUs.forEach((sku, i) => {
         const btpRow = mockData.BTP.find(r => r.sku === sku);
         const ctpRow = mockData.CTP.find(r => r.sku === sku);
         const rtpRow = mockData.RTP.find(r => r.sku === sku);
@@ -506,7 +518,7 @@
         detailsTr.id = `cdetails-${safeId}`;
         detailsTr.className = 'hidden bg-slate-50/50 details-row';
         
-        let breakdownHtml = generateComponentBreakdownHtml(sku);
+        let breakdownHtml = generateComponentBreakdownHtml(sku, null, true);
 
         detailsTr.innerHTML = `
           <td colspan="8" class="p-0 border-b border-slate-100">
