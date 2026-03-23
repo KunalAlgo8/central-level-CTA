@@ -89,7 +89,7 @@
     <div class="max-w-6xl mx-auto">
       <div class="mb-12">
         <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Select Dashboard</h1>
-        <p class="text-slate-500 mt-2 text-lg">Choose a plant or view central comparison</p>
+        <p class="text-slate-500 mt-2 text-lg">Choose a plant or view global comparison</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
@@ -121,7 +121,7 @@
         </div>
 
         <!-- Global Comparison Dashboard -->
-        <div onclick="openCentral()" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 cursor-pointer group">
+        <div onclick="openglobal()" class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200 transition-all duration-300 cursor-pointer group">
           <div class="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-purple-50 text-purple-600 group-hover:scale-110 transition-transform duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/><path d="M2 12h20"/></svg>
           </div>
@@ -183,9 +183,9 @@
   </div>
 
   <!-- ==========================================
-       CENTRAL DASHBOARD
+       global DASHBOARD
        ========================================== -->
-  <div id="central-dashboard" class="page-section hidden min-h-screen p-6 md:p-10">
+  <div id="global-dashboard" class="page-section hidden min-h-screen p-6 md:p-10">
     <div class="max-w-7xl mx-auto space-y-6">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-5 rounded-2xl shadow-sm border border-slate-100 gap-4">
         <div class="flex items-center space-x-4">
@@ -222,7 +222,7 @@
                 <th class="px-6 py-4 text-sm font-semibold text-slate-600 uppercase tracking-wider text-right border-l border-slate-100">Details</th>
               </tr>
             </thead>
-            <tbody id="central-tbody">
+            <tbody id="global-tbody">
               <!-- JS will populate rows here -->
             </tbody>
           </table>
@@ -309,9 +309,9 @@
       showPage('plant-dashboard');
     }
 
-    function openCentral() {
-      renderCentralTable();
-      showPage('central-dashboard');
+    function openglobal() {
+      renderglobalTable();
+      showPage('global-dashboard');
     }
 
     function toggleRow(rowId, chevronId) {
@@ -465,8 +465,8 @@
       });
     }
 
-    function renderCentralTable() {
-      const tbody = document.getElementById('central-tbody');
+    function renderglobalTable() {
+      const tbody = document.getElementById('global-tbody');
       tbody.innerHTML = '';
       
       SKUS.forEach((sku, i) => {
